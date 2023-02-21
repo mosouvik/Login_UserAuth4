@@ -2,10 +2,25 @@ const User = require('../model/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-const home=(req,res)=>{
-    res.render('home',{
-        data:User.find()
-    })
+// const home=(req,res)=>{
+//     res.render('home',{
+//         data:User.find()
+//     })
+// }
+
+const home = (req, res) => {
+    if (req.user) {
+        User.find({}, function (err, userdetails) {
+            if (!err) {
+                res.render('home', {      
+                  data:req.user  
+                })
+            } else {
+                console.log(err);
+            }
+        })
+    }
+
 }
 
 const register = (req, res) => {
@@ -106,6 +121,21 @@ const userAuth = (req, res, next) => {
     }
 }
 
+
+const userhomeAuth = (req, res, next) => {
+    if (req.user) {
+        console.log(req.user);
+        next();
+    } else {
+        console.log(req.user);
+        req.flash('message2', "Can not access this page  -- First register then login then access this page ")
+        res.redirect('/')
+    }
+}    
+
+        
+    
+
 const logout = (req, res) => {
     res.clearCookie('userToken')
     res.redirect('/login')
@@ -119,5 +149,6 @@ module.exports = {
     login_create,
     dashborad,
     userAuth,
-    logout
+    logout,
+    userhomeAuth
 }
