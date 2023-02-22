@@ -2,6 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const cookieparser=require('cookie-parser')
 const userAuth=require('./middleware/userAuth');
+const adminAuth=require('./middleware/adminAuth');
 const session=require('express-session')
 const flash=require('connect-flash');
 
@@ -25,9 +26,12 @@ app.set('view engine','ejs');
 app.set('views','views')
 
 app.use(userAuth.authjwt)
+app.use(adminAuth.authejwt)
 
 const userroute=require('./routes/userRoute')
 app.use(userroute)
+const AdminRoute=require('./routes/AdminRoute')
+app.use('/admin',AdminRoute)
 
 
 const DB="mongodb+srv://nodeClassjan:BrnrXRpwEfvb35kG@cluster0.4axmojt.mongodb.net/USER_Auth_Login"
